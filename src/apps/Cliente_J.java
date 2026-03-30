@@ -1,4 +1,5 @@
 package apps;
+import utils.*;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Scanner;
@@ -10,7 +11,7 @@ import java.util.Scanner;
  * @author Pedro Ambrósio, nº88589
  * @version 5.0 [23/03/26]
  */
-public class Cliente {
+public class Cliente_J {
 
     /**
      * Metodo principal do programa.
