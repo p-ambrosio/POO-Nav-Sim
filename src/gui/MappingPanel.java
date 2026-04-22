@@ -18,4 +18,8 @@ public class MappingPanel {
     public void drawProxyArea(){
 
     }
+
+    public void refreshUI(){
+
+    }
 }
