@@ -4,12 +4,12 @@ import utils.*;
 
 
 public class Ship {
-    private String id; // Ex: "A12"
+    private String id; // Ex: "A12" or "S.S.Silly Ship"
     private Ponto position;
     private double speed;
     private Route currentRoute;
     private int departureTime;
-    private boolean isWaiting; //To avoid colisions
+    private boolean isWaiting; //To avoid colisions??
     private boolean arrived;
 
     /*
@@ -51,5 +51,7 @@ public class Ship {
     public Ponto getPosition()  { return position; }
 
     public boolean hasArrived() { return arrived; }
+
+    public int getDepartureTime()  { return departureTime; }
 
 }

@@ -9,6 +9,11 @@ import java.util.List;
 
 class ShipTest {
 
+    //Forgot this silly one before
+    @Test
+    public void constructorTest(){
+        //TODO
+    }
 
     //After t=0 the ship must be exactly at the route's first point (or should) *PASSED*
     @Test
@@ -78,4 +83,7 @@ class ShipTest {
     void setRoute() {
         //TODO
     }
+
+
+    //TODO SHOT MYSELF SO MANY TESTS
 }
