@@ -1,5 +1,5 @@
 package tests;
-
+//  UP TO DATE
 import org.junit.jupiter.api.Test;
 import project.*;
 import utils.*;
@@ -49,5 +49,30 @@ class PortTest {
         assertEquals(9,  fila.get(0).getDepartureTime());
         assertEquals(12, fila.get(1).getDepartureTime());
         assertEquals(15, fila.get(2).getDepartureTime());
+    }
+
+    //getter tests
+    @Test //*PASSED*
+    public void getNameTest() {
+        Port portA = new Port("A", new Ponto(20, 10));
+        assertEquals("A", portA.getName());
+    }
+
+    @Test //+PASSED*
+    public void getPositionTest() {
+        Port portA = new Port("A", new Ponto(20, 10));
+        assertEquals(20.0, portA.getPosition().getX(), 0.001);
+        assertEquals(10.0, portA.getPosition().getY(), 0.001);
+    }
+
+    @Test //*PASSED*
+    public void getQuequeReturnsCopyTest() {
+        Port portA = new Port("A", new Ponto(20, 10));
+        Port portF = new Port("F", new Ponto(10, 10));
+        portA.addSchedule(new Schedule(12, portF, 3.0));
+
+        List<Schedule> copy = portA.getQueque();
+        copy.clear();
+        assertFalse(portA.getQueque().isEmpty()); // original unchanged
     }
 }

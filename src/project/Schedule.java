@@ -1,5 +1,5 @@
 package project;
-
+//  DONE?
 public class Schedule {
     private int departureTime;
     private Port destination;
@@ -16,5 +16,9 @@ public class Schedule {
     public Port getDestination() { return destination; }
     public double getSpeed() { return speed; }
 
-    //tostring to format??
+    //tostring to format to enuciado thingy??
+    @Override
+    public String toString(){
+        return String.format("T=%d, %s, %.0f", departureTime, destination.getName(), speed);
+    }
 }

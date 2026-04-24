@@ -30,7 +30,7 @@ public class Ship {
     /*
         Will handle movement of ship based on speed and etc
      */
-    public void movement (double dt, double x, double y){
+    public void movement (double time, double x, double y){
 
     }
 
