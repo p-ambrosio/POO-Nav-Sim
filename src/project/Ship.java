@@ -4,19 +4,20 @@ import utils.*;
 
 
 public class Ship {
-    private String id; // Ex: "A12" or "S.S.Silly Ship"
+    private static int id = 0; //
     private Ponto position;
     private double speed;
     private Route currentRoute;
     private int departureTime;
     private boolean isWaiting; //To avoid colisions??
     private boolean arrived;
+    private final double radius = 2;
 
     /*
         Ship constructor
      */
-    public Ship(String id, Route route, double speed, int departureTime) {
-        this.id = id;
+    public Ship(Route route, double speed, int departureTime) {
+        id++;
         this.currentRoute = route;
         this.speed = speed;
         this.departureTime = departureTime;
@@ -24,13 +25,19 @@ public class Ship {
         this.isWaiting = false;
         this.arrived = false;
 
+
         this.position = route.getPoints().getFirst(); //to start at the first point of the route its going
     }
 
+    public Route getCurrentRoute() {
+        return currentRoute;
+    }
+
     /*
-        Will handle movement of ship based on speed and etc
-     */
+            Will handle movement of ship based on speed and etc
+         */
     public void movement (double time, Port p, Vetor v){
+        RouteGraphing rg = new RouteGraphing();
         while(!arrived){
 
             if (getPosition().equals(p.getPosition())) {
@@ -40,14 +47,11 @@ public class Ship {
         }
     }
 
-    /*
-        Will handle the checking if a ship is near an obstacle moving or not
-     */
-    public void checkCollision(Ship obstacle){
 
+    public boolean isNear(Ship other){
+        // intercepts code lol
+        return this.radius.intercepts(other.radius);
     }
-
-
 
     /*
         Getters and setter?

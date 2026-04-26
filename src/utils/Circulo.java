@@ -9,8 +9,8 @@ package utils;
  * @inv O raio deve ser maior que zero.
  */
 public class Circulo extends Figura {
-    private final Ponto centro;
-    private final double raio;
+    protected Ponto centro;
+    protected final double raio;
 
     /**
      * Contrutor criador de uma figura, circulo que necessita de ter area>=1

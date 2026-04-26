@@ -24,14 +24,26 @@ public class MovingObstacle extends Circulo{
         this.speed = speed;
     }
 
+    private void setPosition(Ponto centro){
+        this.centro = centro;
+    }
+
     //So we have it be random... since "Em cada simulação deverão estar em posições diferentes" makes it a pain to deal with
-    public MovingObstacle positioning(double time){
+    public void positioning(double time){
         Random rngesus = new Random();
 
         double x = getCentro().getX() + speed.getX() * rngesus.nextDouble()*time;
         double y = getCentro().getY() + speed.getY() * rngesus.nextDouble()*time;
 
-        return new MovingObstacle(new Ponto(x,y),getRaio(),speed);
+        setPosition(new Ponto(x,y));
+    }
+
+
+    public void move() throws InterruptedException {
+        while(true){
+            positioning(1);
+            wait(500);
+        }
     }
 
     public Vetor getSpeed(){ return speed;}
