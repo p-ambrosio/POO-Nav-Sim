@@ -10,7 +10,7 @@ import static org.junit.jupiter.api.Assertions.*;
 
 class PortTest {
 
-    //basic constructor test since we have to *PASSED*
+    //basic constructor test since we have to s
     @Test
     public void constructorTest(){
         Port portA = new Port("A", new Ponto(20,10));
@@ -19,9 +19,9 @@ class PortTest {
         assertEquals(10, portA.getPosition().getY(), 0.001);
     }
 
-    //Test to see if we can add to the queque the info *PASSED*
+    //Test to see if we can add to the queque the info
     @Test
-    public void addScheduleTest(){
+    public void addScheduleTest1(){
         Port portA = new Port("A", new Ponto(20,10));
         Schedule test = new Schedule(12,portA,3.0);
 
@@ -31,9 +31,9 @@ class PortTest {
         assertEquals(1,portA.getQueque().size());
     }
 
-    //Test to for the sorting *PASSED*
+    //Test to for the sorting
     @Test
-    public void addScheduleOrderTest() {
+    public void addScheduleTest2() {
         Port portA = new Port("A", new Ponto(20, 10));
         Port portF = new Port("F", new Ponto(10, 10));
 
@@ -52,21 +52,21 @@ class PortTest {
     }
 
     //getter tests
-    @Test //*PASSED*
+    @Test
     public void getNameTest() {
         Port portA = new Port("A", new Ponto(20, 10));
         assertEquals("A", portA.getName());
     }
 
-    @Test //+PASSED*
+    @Test
     public void getPositionTest() {
         Port portA = new Port("A", new Ponto(20, 10));
         assertEquals(20.0, portA.getPosition().getX(), 0.001);
         assertEquals(10.0, portA.getPosition().getY(), 0.001);
     }
 
-    @Test //*PASSED*
-    public void getQuequeReturnsCopyTest() {
+    @Test
+    public void getQuequeTest() {
         Port portA = new Port("A", new Ponto(20, 10));
         Port portF = new Port("F", new Ponto(10, 10));
         portA.addSchedule(new Schedule(12, portF, 3.0));
