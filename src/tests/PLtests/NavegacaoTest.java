@@ -1,4 +1,4 @@
-package tests;
+package tests.PLtests;
 
 import org.junit.jupiter.api.Test;
 import utils.Navegacao;

@@ -16,30 +16,18 @@ class MovingObstacleTest {
         assertEquals(10.0, obs.getCentro().getX(), 0.001);
         assertEquals(10.0, obs.getCentro().getY(), 0.001);
         assertEquals(5.0,  obs.getRaio(), 0.001);
-
     }
 
-    @Test //* DOES NOT PASS * Pq o circulo nao esta a atualizar o seu centro o mesmo vai acontecer aos próximos tests
-    public void positioningNewPositionTest() {
+    @Test
+    public void positioningTest1() {
         MovingObstacle obs = new MovingObstacle(new Ponto(0, 0), 5.0, new Vetor(2, 1));
-        MovingObstacle repositioned = obs.positioning(3.0);  // time = 3
+        MovingObstacle repositioned = obs.positioning(3.0);            // time = 3
 
         // new center = (0 + 2*3, 0 + 1*3) = (6, 3) in theory
-        assertEquals(6.0, repositioned.getCentro().getX(), 0.001);
+        assertEquals(6.0, repositioned.getCentro().getX(), 0.001);          // obs.getCenter gets the circle position
         assertEquals(3.0, repositioned.getCentro().getY(), 0.001);
     }
 
-    @Test
-    public void positioningChangesTest(){
-
-    }
-
-    @Test
-    public void positioningKeepRaioTest(){
-
-    }
-
-    // *PASSED*
     @Test
     public void getSpeedTest() {
         Vetor speed = new Vetor(2, 1);

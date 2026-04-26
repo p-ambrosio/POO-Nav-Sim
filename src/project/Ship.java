@@ -30,8 +30,14 @@ public class Ship {
     /*
         Will handle movement of ship based on speed and etc
      */
-    public void movement (double time, double x, double y){
+    public void movement (double time, Port p, Vetor v){
+        while(!arrived){
 
+            if (getPosition().equals(p.getPosition())) {
+                arrived = true;
+                break;
+            }
+        }
     }
 
     /*

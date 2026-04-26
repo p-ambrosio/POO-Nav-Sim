@@ -6,7 +6,7 @@ import project.*;
 import static org.junit.jupiter.api.Assertions.*;
 
 class ScheduleTest {
-    @Test //*PASSED*
+    @Test
     public void constructorTest(){
         Port portF = new Port("F", new Ponto(10, 10));
         Schedule s = new Schedule(12, portF, 3.0);
@@ -15,29 +15,28 @@ class ScheduleTest {
         assertEquals(3.0,  s.getSpeed(), 0.001);
 
     }
-    //useless tests
-    @Test //*PASSED*
+    @Test
     public void getDepartureTimeTest() {
         Port portF = new Port("F", new Ponto(10, 10));
         Schedule s = new Schedule(9, portF, 2.0);
         assertEquals(9, s.getDepartureTime());
     }
 
-    @Test //*PASSED*
+    @Test
     public void getDestinationTest() {
         Port portF = new Port("F", new Ponto(10, 10));
         Schedule s = new Schedule(12, portF, 3.0);
         assertEquals(portF, s.getDestination());
     }
 
-    @Test //*PASSED*
+    @Test
     public void getSpeedTest() {
         Port portF = new Port("F", new Ponto(10, 10));
         Schedule s = new Schedule(12, portF, 3.0);
         assertEquals(3.0, s.getSpeed(), 0.001);
     }
 
-    @Test // *PASSED*
+    @Test
     public void toStringTest(){
         Port portF = new Port("F", new Ponto(10, 10));
         Schedule s = new Schedule(12, portF, 3.0);
