@@ -2,6 +2,8 @@ package project;
 
 import utils.*;
 
+import java.util.List;
+
 
 public class Ship {
     private static int id = 0; //
@@ -12,20 +14,20 @@ public class Ship {
     private boolean isWaiting; //To avoid colisions??
     private boolean arrived;
     private final double radius = 2;
+    private Port startingPort;
 
     /*
         Ship constructor
      */
-    public Ship(Route route, double speed, int departureTime) {
+    public Ship(Port p, double speed, int departureTime) {
         id++;
-        this.currentRoute = route;
         this.speed = speed;
         this.departureTime = departureTime;
 
         this.isWaiting = false;
         this.arrived = false;
 
-
+        startingPort = p;
         this.position = route.getPoints().getFirst(); //to start at the first point of the route its going
     }
 
@@ -33,10 +35,15 @@ public class Ship {
         return currentRoute;
     }
 
+    public Port getStartingPort(){
+        return startingPort;
+    }
+
     /*
             Will handle movement of ship based on speed and etc
          */
-    public void movement (double time, Port p, Vetor v){
+    public void movement (double time, List<Route> routes){
+        this.currentRoute = route;
         RouteGraphing rg = new RouteGraphing();
         while(!arrived){
 
