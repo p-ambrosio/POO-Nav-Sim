@@ -1,6 +1,7 @@
 package project;
 
-import utils.*;
+import utils.Ponto;
+import utils.Route;
 
 import java.util.List;
 
@@ -13,7 +14,7 @@ public class Ship {
     private int departureTime;
     private boolean isWaiting; //To avoid colisions??
     private boolean arrived;
-    private final double radius = 2;
+    private final double radius = 1;
     private Port startingPort;
 
     /*
@@ -43,8 +44,8 @@ public class Ship {
             Will handle movement of ship based on speed and etc
          */
     public void movement (double time, List<Route> routes){
-        this.currentRoute = route;
-        RouteGraphing rg = new RouteGraphing();
+//        this.currentRoute = route;
+//        RouteGraphing rg = new RouteGraphing();
         while(!arrived){
 
             if (getPosition().equals(p.getPosition())) {

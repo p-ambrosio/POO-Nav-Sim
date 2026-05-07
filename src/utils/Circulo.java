@@ -1,97 +1,78 @@
+/**
+ * @author a90143 Bruno Simao
+ * @version 1 - lab4 23-03-2026
+ */
 package utils;
 
-/**
- * Representa um círculo definido por um centro e um raio.
- * Não é definido por vértices.
- *
- * @author Pedro Ambrósio, nº88589
- * @version 1.0 [23/03/26]
- * @inv O raio deve ser maior que zero.
- */
-public class Circulo extends Figura {
-    protected Ponto centro;
-    protected final double raio;
+import java.util.ArrayList;
 
-    /**
-     * Contrutor criador de uma figura, circulo que necessita de ter area>=1
-     * @param centro centro do circulo
-     * @param raio raio do circulo
-     */
-    public Circulo(Ponto centro, double raio) {
-        super(new Ponto[]{centro});
-        this.centro = centro;
-        this.raio = raio;
-        if (raio <= 0) {
-            System.out.println("Circulo:iv");
+public class Circulo {
+    private double radius;
+    private Ponto center;
+
+    public Circulo(Ponto center, double rad){
+        if(rad <= 0){
+            IO.println("Circulo:iv");
             System.exit(0);
         }
+        radius = rad;
+        this.center = center;
+    }
+    private int sgn(double x){
+        return x < 0 ? -1 : 1;
     }
 
     /**
-     * Getter do centro do circulo
-     * @return Centro
+     * calculates intersecting points using math equation, taking into account the circle's center in the vector space
+     * @see <https://mathworld.wolfram.com/Circle-LineIntersection.html>
+     * @param r route
+     * @return intersecting points sorted
      */
-    public Ponto getCentro() {
-        return centro;
-    }
+    public Ponto[] findIntersection(Route r) {
+        SegmentoReta[] lineSegments = r.turnToLineSegment(false);
+        ArrayList<Ponto> intersectPoints = new ArrayList<>();
 
-    /**
-     * Getter do raio do circulo
-     * @return raio
-     */
-    public double getRaio() {
-        return raio;
-    }
+        double cx = center.getX();
+        double cy = center.getY();
+        for (SegmentoReta sr : lineSegments) {
+            Vetor A = new Vetor(sr.getP());
+            Vetor B = sr.getV();
 
-    /**
-     * Calculo de verificão se a figura interseta um segmento de reta
-     * @param sr segemento de reta
-     * @return v or f
-     */
-    @Override
-    public boolean intersects (SegmentoReta sr){
-        Ponto p1 = sr.getA();
-        Ponto p2 = sr.getB();
+            double x1 = A.getX() - cx;
+            double y1 = A.getY() - cy;
+            double x2 = B.getX() - cx;
+            double y2 = B.getY() - cy;
 
-        double dx = p2.getX() - p1.getX();
-        double dy = p2.getY() - p1.getY();
+            double dx = x2 - x1;
+            double dy = y2 - y1;
 
-        // Vetor de p1 ao centro
-        double fx = p1.getX() - centro.getX();
-        double fy = p1.getY() - centro.getY();
+            double dr2 = dx * dx + dy * dy;
+            double D = x1 * y2 - x2 * y1;
 
-        double a = dx * dx + dy * dy;
-        double b = 2 * (fx * dx + fy * dy);
-        double c = fx * fx + fy * fy - raio * raio;
+            double discriminant = radius * radius * dr2 - D * D;
 
-        double discriminante = b * b - 4 * a * c;
+            if (discriminant < 0) {
+                continue;
+            }
+            // if it passed , disc = 0 || disc > 0; if = 0 then it's tangent, and has at minimum 1 point
 
-        if (discriminante < 0) {
-            return false; // sem interseção
+            double sqrtDisc = Math.sqrt(discriminant);
+
+            double ix1 = (D * dy + sgn(dy) * dx * sqrtDisc) / dr2 + cx;
+            double iy1 = (-D * dx + Math.abs(dy) * sqrtDisc) / dr2 + cy;
+
+            intersectPoints.add(new Ponto(ix1,iy1));
+
+            // disc > 0 = intersection, so there are 2 points to be checked
+            if (discriminant > 0) {
+                double ix2 = (D * dy - sgn(dy) * dx * sqrtDisc) / dr2 + cx;
+                double iy2 = (-D * dx - Math.abs(dy) * sqrtDisc) / dr2 + cy;
+
+                intersectPoints.add(new Ponto(ix2,iy2));
+            }
         }
 
-        double sqrtDisc = Math.sqrt(discriminante);
-        double t1 = (-b - sqrtDisc) / (2 * a);
-        double t2 = (-b + sqrtDisc) / (2 * a);
+        return Ponto.sort(intersectPoints);
 
-        return (t1 >= 0 && t1 <= 1) || (t2 >= 0 && t2 <= 1);
-    }
-
-    /**
-     * Função de calculo da area de um circulo
-     * @return area do circulo
-     */
-    @Override
-    public double Area(){
-        return Math.PI * Math.pow(raio, 2);
-    }
-
-    /**
-     * Getter de arestas
-     * @return arestas
-     */
-    @Override
-    public SegmentoReta[] getArestas() {
-        return new SegmentoReta[0];
     }
 }

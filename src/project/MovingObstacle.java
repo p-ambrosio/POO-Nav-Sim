@@ -1,6 +1,8 @@
 package project;
 
-import utils.*;
+import utils.Circulo;
+import utils.Ponto;
+import utils.Vetor;
 
 import java.util.Random;
 /*

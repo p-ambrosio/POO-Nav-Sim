@@ -1,0 +1,48 @@
+package utils;
+
+import static org.junit.jupiter.api.Assertions.*;
+import org.junit.jupiter.api.Test;
+import utils.Lab4.Quadrado;
+import utils.Lab4.Retangulo;
+
+public class RetanguloTests {
+    @Test
+    void testconstructor(){
+        Ponto[] p = {
+                new Ponto(1,3),
+                new Ponto(6,3),
+                new Ponto(6,1),
+                new Ponto(1,1)
+        };
+        Retangulo r = new Retangulo(p);
+    }
+    @Test
+    void testintersection(){
+        Ponto[] p1 = {
+                new Ponto(1,0),
+                new Ponto(1,3),
+                new Ponto(4,3),
+                new Ponto(4,0)
+        };
+        Retangulo pol = new Retangulo(p1);
+
+        Ponto[] p2 = {
+                new Ponto(0,0),
+                new Ponto(2,2),
+                new Ponto(2,6),
+        };
+        Route r = new Route(p2);
+
+
+        Ponto[] ip = {
+                new Ponto(1.00,1.00),
+                new Ponto (2.00,3.00) ,
+        };
+        Ponto[] intp = pol.findIntersection(r);
+        int i=0;
+        for(Ponto p : ip){
+            assertEquals(intp[i],p);
+            i++;
+        }
+    }
+}
