@@ -19,35 +19,35 @@ import java.util.Random;
  */
 
 public class MovingObstacle extends Circulo{
-    private final Vetor speed; //used only in the starting set-up
+    //We will cycle within these nodes in each sim, this way it will allways be in a route
+    private static final Ponto[] positions = {
+            new Ponto(480,400),
+            new Ponto(120,190),
+            new Ponto(270,600),
+            new Ponto(800,200),
+    };
 
-    public MovingObstacle(Ponto centro, double raio, Vetor speed) {
+    private static int simIndex =0;
+
+    //speed made no sense
+    public MovingObstacle(Ponto centro, double raio) {
         super(centro, raio);
-        this.speed = speed;
     }
 
-    private void setPosition(Ponto centro){
-        this.centro = centro;
+    private void setPosition(Ponto newCentro) {
+        this.center = newCentro; // works as-is if Circulo.centro is protected
     }
 
-    //So we have it be random... since "Em cada simulação deverão estar em posições diferentes" makes it a pain to deal with
-    public void positioning(double time){
-        Random rngesus = new Random();
+    public void positioning(int obstacleNumber) {
 
-        double x = getCentro().getX() + speed.getX() * rngesus.nextDouble()*time;
-        double y = getCentro().getY() + speed.getY() * rngesus.nextDouble()*time;
+        int index = (simIndex + obstacleNumber) % positions.length;
 
-        setPosition(new Ponto(x,y));
+        setPosition(positions[index]);
     }
 
-
-    public void move() throws InterruptedException {
-        while(true){
-            positioning(1);
-            wait(500);
-        }
+    public static void nextSimulation() {
+        simIndex++;
     }
 
-    public Vetor getSpeed(){ return speed;}
 
 }

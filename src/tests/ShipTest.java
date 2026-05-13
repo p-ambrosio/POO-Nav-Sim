@@ -9,82 +9,107 @@ import java.util.List;
 
 class ShipTest {
 
-    //Forgot this silly one before
     @Test
-    public void constructorTest(){
-        Port startingPort = new Port("asd",new Ponto(1,1));
+    void constructorTest() {
+        Port start = new Port("PortA", new Ponto(0, 0));
+        Port dest  = new Port("PortB", new Ponto(10, 10));
+        Route route = new Route(List.of(start.getPosition(), dest.getPosition()).toArray(new Ponto[0]));
 
-        Ship testerShip = new Ship(startingPort,5.0,0);
+        Ship ship = new Ship(start, dest, 5.0, 0, route);
 
-        assertEquals(0.0, testerShip.getDepartureTime());
-        assertEquals(startingPort,testerShip.getStartingPort());
-    }
-
-    //After t=0 the ship must be exactly at the route's first point
-    @Test
-    // movementT0
-    public void movementTest0() {
-        Port startingPort = new Port("asd",new Ponto(0,0));
-
-        Ship testerShip = new Ship(startingPort,5.0,0);
-        Ponto position = testerShip.getPosition();
-
-        assertEquals(0.0, position.getX(), 0.001);
-        assertEquals(0.0, position.getY(), 0.001);
-    }
-
-    // movementCrossingSegments
-    @Test
-    public void movementTest2(){
-        Port startingPort = new Port("asd",new Ponto(1,1));
-
-        RouteGraphing rg = new RouteGraphing();             // has all preset routes
-        Ship testerShip = new Ship(startingPort,5.0,0);
-
-        List<Route> routes = rg.findPath(testerShip.getStartingPort(),rg.getPort(1));
-        testerShip.movement(2,routes);
-
-        assertEquals(testerShip.getCurrentRoute(),rg.getRoute(2));
-    }
-
-    // movementArrived
-    @Test
-    public void movementTest3(){
-        Port startingPort = new Port("asd",new Ponto(1,1));
-        RouteGraphing rg = new RouteGraphing();             // has all preset routes
-        Ship testerShip = new Ship(startingPort,5.0,0);
-
-        List<Route> routes = rg.findPath(testerShip.getStartingPort(),rg.getPort(1));
-        testerShip.movement(2,routes);
-
-        assertTrue(testerShip.hasArrived());
-    }
-
-    // Check collision w/ ships
-    @Test
-    public void checkCollisionTest1(){
-        Port startingPort = new Port("asd",new Ponto(1,1));
-        Ship testerShip = new Ship(startingPort,5.0,0);
-        Ship testerShip2 = new Ship(startingPort,5.0,0);
-
-        assertTrue(testerShip.isNear(testerShip2));
+        assertEquals(start, ship.getStartingPort());
+        assertEquals(dest, ship.getDestinationPort());
+        assertEquals(0, ship.getDepartureTime());
+        assertEquals(route, ship.getCurrentRoute());
+        assertFalse(ship.hasArrived());
+        assertFalse(ship.isWaiting());
+        assertEquals(start.getPosition(), ship.getPosition());
     }
 
     @Test
-    void setRoute() {
-        Port startingPort = new Port("asd",new Ponto(1,1));
-        Route straight = new Route(List.of(new Ponto(0, 0)));
-        Ship testerShip = new Ship(startingPort,5.0,0);
-        testerShip.setRoute(straight);
+    void movementTest0() {
+        Port start = new Port("PortA", new Ponto(0, 0));
+        Port dest  = new Port("PortB", new Ponto(10, 10));
+        Route route = new Route(List.of(start.getPosition(), dest.getPosition()).toArray(new Ponto[0]));
 
-        assertEquals(testerShip.getCurrentRoute(),straight);
+        Ship ship = new Ship(start, dest, 5.0, 0, route);
+
+        // Antes de se mover
+        Ponto pos = ship.getPosition();
+        assertEquals(0.0, pos.getX(), 0.001);
+        assertEquals(0.0, pos.getY(), 0.001);
     }
 
     @Test
-    void getStartingPortTest(){
-        Port p = new Port("asd",new Ponto(1,1));
-        Ship testerShip = new Ship(p,5.0,0);
+    void movementTest1() {
+        Port start = new Port("PortA", new Ponto(0, 0));
+        Port dest  = new Port("PortB", new Ponto(10, 0));
+        Route route = new Route(List.of(start.getPosition(), dest.getPosition()).toArray(new Ponto[0]));
 
-        assertEquals(p,testerShip.getStartingPort());
+        Ship ship = new Ship(start, dest, 5.0, 0, route);
+        ship.setRoute(route); // inicializa Navegacao
+
+        // Simula tempo suficiente para chegar ao destino
+        ship.movement(10, null);
+
+        assertTrue(ship.hasArrived());
+        Ponto pos = ship.getPosition();
+        assertEquals(10.0, pos.getX(), 0.001);
+        assertEquals(0.0, pos.getY(), 0.001);
+    }
+
+    @Test
+    void isNearTest() {
+        Port start = new Port("PortA", new Ponto(0, 0));
+        Port dest  = new Port("PortB", new Ponto(10, 10));
+        Route route = new Route(List.of(start.getPosition(), dest.getPosition()).toArray(new Ponto[0]));
+
+        Ship s1 = new Ship(start, dest, 5.0, 0, route);
+        Ship s2 = new Ship(start, dest, 5.0, 1, route);
+
+        assertTrue(s1.isNear(s2));
+    }
+
+    @Test
+    void shouldWaitForTest() {
+        Port start = new Port("PortA", new Ponto(0, 0));
+        Port dest  = new Port("PortB", new Ponto(10, 10));
+        Route route = new Route(List.of(start.getPosition(), dest.getPosition()).toArray(new Ponto[0]));
+
+        Ship s1 = new Ship(start, dest, 5.0, 0, route); // tripCode = PortA0
+        Ship s2 = new Ship(start, dest, 5.0, 1, route); // tripCode = PortA1
+
+        assertTrue(s1.shouldWaitFor(s2)); // PortA0 < PortA1
+        assertFalse(s2.shouldWaitFor(s1));
+    }
+
+    @Test
+    void startStopWaitingTest() {
+        Port start = new Port("PortA", new Ponto(0, 0));
+        Port dest  = new Port("PortB", new Ponto(10, 10));
+        Route route = new Route(List.of(start.getPosition(), dest.getPosition()).toArray(new Ponto[0]));
+
+        Ship ship = new Ship(start, dest, 5.0, 0, route);
+        assertFalse(ship.isWaiting());
+
+        ship.startWaiting();
+        assertTrue(ship.isWaiting());
+
+        ship.stopWaiting();
+        assertFalse(ship.isWaiting());
+    }
+
+    @Test
+    void setRouteTest() {
+        Port start = new Port("PortA", new Ponto(0, 0));
+        Port dest  = new Port("PortB", new Ponto(10, 10));
+        Route route1 = new Route(List.of(start.getPosition(), dest.getPosition()).toArray(new Ponto[0]));
+        Route route2 = new Route(List.of(new Ponto(1, 1), new Ponto(2, 2)).toArray(new Ponto[0]));
+
+        Ship ship = new Ship(start, dest, 5.0, 0, route1);
+        ship.setRoute(route2);
+
+        assertEquals(route2, ship.getCurrentRoute());
+        assertEquals(new Ponto(1, 1), ship.getPosition());
     }
 }

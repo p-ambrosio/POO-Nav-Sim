@@ -8,7 +8,7 @@ import java.util.ArrayList;
 
 public class Circulo {
     private double radius;
-    private Ponto center;
+    protected Ponto center;
 
     public Circulo(Ponto center, double rad){
         if(rad <= 0){
