@@ -23,6 +23,7 @@ class ShipTest {
         assertFalse(ship.hasArrived());
         assertFalse(ship.isWaiting());
         assertEquals(start.getPosition(), ship.getPosition());
+        assertEquals("A0",ship.getTripCode());
     }
 
     @Test
@@ -81,5 +82,6 @@ class ShipTest {
         ship.stopWaiting();
         assertFalse(ship.isWaiting());
     }
+
 
 }
