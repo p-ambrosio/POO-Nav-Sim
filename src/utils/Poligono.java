@@ -51,4 +51,7 @@ public class Poligono {
     }
 
 
+    public Ponto[] getVertices() {
+        return vert.clone();
+    }
 }
