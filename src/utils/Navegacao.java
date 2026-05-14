@@ -20,7 +20,7 @@ public class Navegacao extends AutoPilot{
      * @param route rota composta
      */
     public Navegacao(Route route) {
-        super(route.getPoints().getFirst(), route.getPoints().getLast());
+        super(route.getPoints()[0], route.getPoints()[route.getPoints().length-1]);
         this.route = route;
     }
 
@@ -28,14 +28,14 @@ public class Navegacao extends AutoPilot{
      * Calcula o comprimento total da rota somando pontos
      * @return o comprimento atual total da rota composta
      */
-    public double routeLength(){return route.Length();}
+    public double routeLength(){return route.findDistance();}
 
     /**
      * Calcula o tempo total para percorrer toda a rota com velocidade linear constante vl.
      * @param vl velocidade linear
      * @return tempo total para percorrer a rota na sua totalidade
      */
-    public double totalTime(double vl){return route.Length()/vl;}
+    public double totalTime(double vl){return route.findDistance()/vl;}
 
     /**
      * Calcula a lista de vetores velocidade, um por segmento, necessários para compensar
@@ -45,11 +45,11 @@ public class Navegacao extends AutoPilot{
      * @return lista de vetores velocidade, um por segmento da rota
      */
     public List<Vetor> speedVectors(Vetor w, double vl) {
-        List<Ponto> points = route.getPoints();
+        Ponto[] points = route.getPoints();
         List<Vetor> speeds = new ArrayList<>();
-        for (int i = 0; i < points.size() - 1; i++) {
-            Ponto p1 = points.get(i);
-            Ponto p2 = points.get(i + 1);
+        for (int i = 0; i < points.length - 1; i++) {
+            Ponto p1 = points[i];
+            Ponto p2 = points[i + 1];
             AutoPilot segAP = new AutoPilot(p1, p2);
             double segTime = segAP.time(vl);
             speeds.add(segAP.speed(w, segTime));
@@ -66,23 +66,23 @@ public class Navegacao extends AutoPilot{
      * @return o ponto p onde se encontra o avião no t
      */
     public Ponto positionAtTime(double t, double vl) {
-        List<Ponto> points = route.getPoints();
+        Ponto[] points = route.getPoints();
         double remaining = t;
-        for (int i = 0; i < points.size() - 1; i++) {
-            Ponto p1 = points.get(i);
-            Ponto p2 = points.get(i + 1);
+        for (int i = 0; i < points.length - 1; i++) {
+            Ponto p1 = points[i];
+            Ponto p2 = points[i+1];
             AutoPilot segAP = new AutoPilot(p1, p2);
             double segTime = segAP.time(vl);
             if (remaining <= segTime) {
                 double fraction = remaining / segTime;
-                Vetor r = new SegmentoReta(p1, p2).GetVetor();
+                Vetor r = new SegmentoReta(p1, p2).getV();
                 double px = p1.getX() + fraction * r.getX();
                 double py = p1.getY() + fraction * r.getY();
                 return new Ponto(px, py);
             }
             remaining -= segTime;
         }
-        return points.getLast();
+        return points[points.length-1];
     }
 
 

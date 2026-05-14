@@ -53,8 +53,8 @@ class RouteNode {
 class Graph{
     private final static Port A=new Port("A",new Ponto(0,0));
     private final static Port B=new Port("B",new Ponto(0,800));
-    private final static Port C=new Port("C",new Ponto(800,800));
-    private final static Port D=new Port("D",new Ponto(800,0));
+    private final static Port C=new Port("C",new Ponto(800,0));
+    private final static Port D=new Port("D",new Ponto(800,800));
 
     private final static Port[] ports = {A,B,C,D};
     private static final Set<RouteNode> routeNodes = new HashSet<>();
@@ -204,6 +204,14 @@ class Graph{
             }
         }
     }
+
+    public void blockedNodes(){
+        for(RouteNode nodes : routeNodes){
+            if(nodes.isBlocked){
+                IO.println(nodes.getKey());
+            }
+        }
+    }
 }
 
 public class RouteGraphing {
@@ -218,10 +226,10 @@ public class RouteGraphing {
 
         graph.setBlocked(mo1.getPosition());
         graph.setBlocked(mo2.getPosition());
+
     }
 
     public Route findPath(Port beginning, Port end){
-
         return Graph.findPath(graph.getRouteNode(beginning.getName()),graph.getRouteNode(end.getName()));
     }
     public Port getPort(int i){
