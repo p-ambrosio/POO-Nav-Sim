@@ -89,5 +89,35 @@ public class Navegador extends AutoPilot{
 
         return t;
     }
+    public Ponto positionByDistance(double distanceToTravel) {
 
+        Ponto[] pts = super.r.getPoints();
+
+        for (int i = 0; i < pts.length - 1; i++) {
+
+            Ponto A = pts[i];
+            Ponto B = pts[i + 1];
+
+            double segmentDist = A.dist(B);
+
+            if (distanceToTravel <= segmentDist) {
+
+                double ratio = distanceToTravel / segmentDist;
+
+                double x =
+                        A.getX()
+                                + ratio * (B.getX() - A.getX());
+
+                double y =
+                        A.getY()
+                                + ratio * (B.getY() - A.getY());
+
+                return new Ponto(x, y);
+            }
+
+            distanceToTravel -= segmentDist;
+        }
+
+        return pts[pts.length - 1];
+    }
 }

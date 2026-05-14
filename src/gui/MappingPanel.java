@@ -42,10 +42,12 @@ public class MappingPanel extends JPanel {
     }
 
     public void update(List<Route> routes, List<Ship> ships, List<MovingObstacle> movingObs, List<Poligono> fixedObs, List<Port> ports, Vetor current) {
-        this.routes = routes;   this.ships = ships;
-        this.movingObs = movingObs; this.fixedObs = fixedObs;
-        this.ports = ports; this.current = current;
-        this.graphing = graphing;
+        this.routes = routes;
+        this.ships = ships;
+        this.movingObs = movingObs;
+        this.fixedObs = fixedObs;
+        this.ports = ports;
+        this.current = current;
         repaint();
     }
 
@@ -151,7 +153,7 @@ public class MappingPanel extends JPanel {
             for (Ship other : ships) {
                 if (other != s && !other.hasArrived() && s.isNear(other)) { near = true; break; }
             }
-            int pr = Math.max(20, sp(1));
+            int pr = Math.max(100, sp(1));
 
             if (near) {
                 // Filled semi-transparent yellow-green
@@ -232,8 +234,8 @@ public class MappingPanel extends JPanel {
     }
 
     private void drawCurrentBox(Graphics2D g2) {
-        String cx = "X = " + (current == null ? "0" : String.format("%.0f", current.getX()));
-        String cy = "Y = " + (current == null ? "0" : String.format("%.0f", current.getY()));
+        String cx = "X = " + String.format("%.0f", current.getX());
+        String cy = "Y = " + String.format("%.0f", current.getY());
         Font f = new Font("SansSerif", Font.PLAIN, 11);
         g2.setFont(f);
         FontMetrics fm = g2.getFontMetrics(f);
@@ -256,5 +258,8 @@ public class MappingPanel extends JPanel {
         int y = by + 6 + fm.getAscent();
         for (String l : lines) { g2.drawString(l, bx + pw, y); y += lh; }
     }
-
+    public void setCurrent(Vetor current) {
+        this.current = current;
+        repaint();
+    }
 }

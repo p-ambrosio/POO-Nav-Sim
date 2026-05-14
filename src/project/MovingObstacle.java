@@ -20,6 +20,9 @@ import java.util.Random;
 
 public class MovingObstacle extends Circulo{
     //We will cycle within these nodes in each sim, this way it will allways be in a route
+    private static final Random r= new Random();
+
+    private static int simIndex=r.nextInt(1234);
     private static final Ponto[] positions = {
             new Ponto(480,400),
             new Ponto(120,190),
@@ -27,7 +30,6 @@ public class MovingObstacle extends Circulo{
             new Ponto(800,200),
     };
 
-    private static int simIndex =0;
 
     //speed made no sense
     public MovingObstacle(Ponto centro, double raio) {
@@ -51,7 +53,8 @@ public class MovingObstacle extends Circulo{
 
     public static void nextSimulation() {
         simIndex++;
-    }
 
+    }
+    public static int getSimIndex(){return simIndex;}
 
 }

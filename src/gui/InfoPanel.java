@@ -3,14 +3,17 @@ package gui;
 import javax.swing.*;
 import javax.swing.border.TitledBorder;
 
-import project.*;
+import utils.Vetor;
+
 import java.awt.*;
+import java.awt.event.ActionEvent;
+import java.util.function.Consumer;
 
 public class InfoPanel extends JPanel {
-    private final JTextField fieldX = new JTextField("0", 5);
-    private final JTextField fieldY = new JTextField("0", 5);
+    private final JTextField fieldX = new JTextField("1", 5);
+    private final JTextField fieldY = new JTextField("2", 5);
     private final JLabel timeLbl = new JLabel("T = 0");
-    private Runnable onCurrentChanged;
+    private Consumer<Vetor> currentListener;
 
     public InfoPanel() {
         setLayout(new BoxLayout(this, BoxLayout.Y_AXIS));
@@ -33,11 +36,25 @@ public class InfoPanel extends JPanel {
         p.add(new JLabel("Y:"));  p.add(fieldY);
 
         JButton btn = new JButton("Aplicar");
-        btn.addActionListener(e -> { if (onCurrentChanged != null) onCurrentChanged.run(); });
+        btn.addActionListener(this::actionPerformed);
         p.add(new JLabel());
         p.add(btn);
         return p;
     }
+    public void setCurrentListener(java.util.function.Consumer<Vetor> listener) {
+        this.currentListener = listener;
+    }
+    private void actionPerformed(ActionEvent e)
+    {
+
+        Vetor v = new Vetor(
+                Integer.parseInt(fieldX.getText()),
+                Integer.parseInt(fieldY.getText())
+        );
+
+        if(currentListener != null) {
+            currentListener.accept(v);
+        }    }
 
     private JPanel buildTimePanel() {
         JPanel p = new JPanel();

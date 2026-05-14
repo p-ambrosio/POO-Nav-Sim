@@ -59,6 +59,7 @@ class Graph{
     private final static Port[] ports = {A,B,C,D};
     private final Set<RouteNode> routeNodes = new HashSet<>();
     private final Map<Integer,RouteNode> graph = new HashMap<>();
+    private final List<SegmentoReta> segmentoRetas = new ArrayList<>();
 
     public Graph(){
         RouteNode[] nodes = {
@@ -99,9 +100,13 @@ class Graph{
         nodes[15].addNeighbour(new RouteNode[]{nodes[0], nodes[16]});
         nodes[16].addNeighbour(new RouteNode[]{nodes[15], nodes[12],nodes[9],nodes[10]});
 
+
         routeNodes.addAll(List.of(nodes));
         for(RouteNode rn : routeNodes){
             graph.put(rn.hashCode(),rn);
+            for(RouteNode neighbours : rn.getNeighbours().keySet()) {
+                segmentoRetas.add(new SegmentoReta(rn.getValue(),new Vetor(neighbours.getValue())));
+            }
         }
     }
 
@@ -213,10 +218,15 @@ class Graph{
             }
         }
     }
+    public Port[] getPorts(){
+        return ports;
+    }
 }
 
 public class RouteGraphing {
     Graph graph = new Graph();
+    MovingObstacle mo1;
+    MovingObstacle mo2;
     Poligono[] staticObstacle = {
             new Poligono(new Ponto[]{new Ponto(150,480),new Ponto(60,290), new Ponto(200,340)}),
             new Poligono(new Ponto[]{new Ponto(370,790),new Ponto(460,740),new Ponto(350,640)}),
@@ -226,8 +236,8 @@ public class RouteGraphing {
 
 
     public RouteGraphing(){
-        MovingObstacle mo1 = new MovingObstacle(new Ponto(0,0),1);
-        MovingObstacle mo2 = new MovingObstacle(new Ponto(0,0),1);
+        mo1 = new MovingObstacle(new Ponto(0,0),100);
+        mo2 = new MovingObstacle(new Ponto(0,0),100);
 
         mo1.positioning(0);
         mo2.positioning(1);
@@ -245,6 +255,14 @@ public class RouteGraphing {
 
     public Port getPort(String name){
         return graph.getPort(name);
+    }
+
+    public Port[] getPorts(){
+        return graph.getPorts();
+    }
+
+    public MovingObstacle[] getMovingObstacle(){
+        return new MovingObstacle[]{mo1,mo2};
     }
 
     public Poligono[] getStaticObstacle(){
