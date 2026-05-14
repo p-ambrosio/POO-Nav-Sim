@@ -1,150 +1,119 @@
-package utils ;
-
 /**
- * A class SegmentoReta permite a criacao de um segmento de reta num plano bidimensional
- * atraves de dois pontos, o inicial e um vetor de posicao que define o seu final.
- * Permite calcular a intersecao com os vetores
- *
- * @author Pedro Ambrósio, nº88589
- * @version 3.0 [2/03/26]
- * @inv Os pontos A e B não podem ser iguais
+ * @author a90143 Bruno Simao
+ * @version 4 - lab3 23-03-2026
  */
+
+package utils;
+
 public class SegmentoReta {
-    private final Ponto A;
-    private final Ponto B;
+    private Ponto p;
+    private Vetor v;
     /**
-     * Construtor que cria um segmento de reta atraves de dois pontos
-     * caso iguais devolve a mensagem de erro
-     * @param pA ponto A
-     * @param pB ponto B
+     * @inv        p != v
+     * @param p    Ponto object that will be the first connector of the line segment
+     * @param v    Vetor object that will be the 2nd connector of the line segment
      */
-    public SegmentoReta(Ponto pA, Ponto pB) {
-        this.A = pA;
-        this.B = pB;
+    public SegmentoReta(Ponto p, Vetor v){
+        this.p = p;
+        this.v = v;
 
-        if(pA.getX() == pB.getX() && pA.getY() == pB.getY()){
+        Vetor b = new Vetor(p);
+        if(b.equals(v)){
             System.out.println("SegmentoReta:iv");
             System.exit(0);
         }
     }
+
+    public Ponto getP() {
+        return p;
+    }
+
+    public Vetor getV() {
+        return v;
+    }
+
     /**
-     * Construtor que cria um segmento de reta atraves do ponto inicial e do vetor posicao
-     * caso o vetor posicao tenha um módulo de 0 acaba o programa com a mensagem de erro
-     * @param pI ponto inicial
-     * @param vP ponto vetor
+     * @inv        p1 != p2
+     * @param p1   Ponto object that will be the 1st connector of the line segment
+     * @param p2   Ponto object that will be the 2nd connector of the line segment
      */
-    public SegmentoReta(Ponto pI, Vetor vP) {
-        this.A = pI;
-        double xB = pI.getX()+ vP.getX();
-        double yB = pI.getY()+vP.getY();
-        this.B = new Ponto(xB, yB);
-        if(vP.calcMod() == 0){
+    public SegmentoReta(Ponto p1, Ponto p2){
+        this.p = p1;
+        this.v = new Vetor(p2);
+
+        if(p1.equals(p2)){
             System.out.println("SegmentoReta:iv");
             System.exit(0);
         }
     }
+
     /**
-     * Getter de A
-     * @return Ponto A
+     * @inv        p1 != p2
+     * @return     Ordem of distance of the segmento de reta
      */
-    public Ponto getA() {
-        return A;
-    }
-    /**
-     * Getter de B
-     * @return Ponto B
-     */
-    public Ponto getB() {
-        return B;
+    public SegmentoReta distOrdem(){
+        Ponto n = new Ponto(p.getX()+v.getX(),p.getY()+v.getY());
+
+        if(n.moduloPosicao() < p.moduloPosicao()) return new SegmentoReta(n, new Vetor(p));
+        else return new SegmentoReta(p, new Vetor(n));
     }
 
     /**
-     *  Calcula o ponto de interseção entre este segmento de reta e um vetor com o metodo
-     *  encontrado na wikipedia (link descrito)
-     * @param v vetor com que se calcula a intersecao
-     * @return o ponto de intersecao caso valido ou null caso contrario
-     * @see "https://en.wikipedia.org/wiki/Line–line_intersection"
+     * Torna em String
+     * @inv        p1 != p2
+     * @return     String formatted as "sr((x1,y1),(x2,y2))"
      */
-    public Ponto Intersect(Vetor v){
-        //Cord of the points
-        double x1 = A.getX();
-        double y1 = A.getY();
-        double x2 = B.getX();
-        double y2 = B.getY();
-        //cord of line of vector
-        double x3= 0;
-        double y3 = 0;
-        double x4 = v.getX();
-        double y4 = v.getY();
-
-        double denominador = (x1 - x2) * (y3 - y4) - (y1 - y2) * (x3 - x4);
-        double t = ((x1 - x3) * (y3 - y4) - (y1 - y3) * (x3 - x4)) / denominador;
-        double u = -((x1 - x2) * (y1 - y3) - (y1 - y2) * (x1 - x3)) / denominador;
-
-        // Verification se esta dentro dos limites
-        if (t >= 0 && t <= 1 && u >= 0) {
-            // Calculo do ponto de interseção
-            double xi = x1 + t * (x2 - x1);
-            double yi = y1 + t * (y2 - y1);
-            return new Ponto(xi, yi);
-        }
-        return null; //null caso contrario
+    public String toString(){
+        String pString = "("+ String.format("%.2f", p.getX())+","+ String.format("%.2f", p.getY())+")";
+        String vString = "("+String.format("%.2f", v.getX())+","+String.format("%.2f", v.getY())+")";
+        return "sr("+pString+"; "+vString+")";
     }
 
     /**
-     * Caclcula o ponto de interseção entre dois segmentos de reta seguindo a logica
-     * do outro intersect para os cálculos
-     * @param sr segmento de reta a testar
-     * @return o ponto de interseção ou null caso invalido
+    * Finds the intersecting point between a vector and a line segment
+    * @inv        p1 != p2
+    * @see        "http://www.paulbourke.net/geometry/pointlineplane/"
+    * @param v    Vetor object that will be used to find the intersecting point
+    * @return     Ponto intersecting with the segmento reta
      */
-    public Ponto Intersect(SegmentoReta sr){
-        double x1 = this.A.getX();
-        double y1 = this.A.getY();
-        double x2 = this.B.getX();
-        double y2 = this.B.getY();
+    public Ponto intersect(Vetor v){
 
-        double x3 = sr.getA().getX();
-        double y3 = sr.getA().getY();
-        double x4 = sr.getB().getX();
-        double y4 = sr.getB().getY();
+        double denominator = ((p.getX()-this.v.getX())*(-v.getY())) - ((p.getY()-this.v.getY())*(-v.getX()));
+        double a1 = (p.getX()*(-v.getY()) - p.getY()*(-v.getX())) / denominator;
 
-        double denominador = (x1 - x2) * (y3 - y4) - (y1 - y2) * (x3 - x4);
+        if(a1 > 0 || a1 < 1) {
+            double x = p.getX() + a1 * (this.v.getX() - p.getX());
+            double y = p.getY() + a1 * (this.v.getY() - p.getY());
 
-        double t = ((x1 - x3) * (y3 - y4) - (y1 - y3) * (x3 - x4)) / denominador;
-        double u = ((x1 - x3) * (y1 - y2) - (y1 - y3) * (x1 - x2)) / denominador;
+            return new Ponto(x, y);
+        }else return null;
+    }
 
-        if (t >= 0 && t <= 1 && u >= 0 && u <= 1) {
-            double xi = x1 + t * (x2 - x1);
-            double yi = y1 + t * (y2 - y1);
-            return new Ponto(xi, yi);
+    /**
+     * @see     <https://paulbourke.net/geometry/pointlineplane/> Intersection point of two line segments in 2 dimensions
+     * @param   that - Other line segment to check for intersections
+     * @return  intersecting point between 2 line segments
+     */
+    public Ponto intersect(SegmentoReta that){
+        double x1 = this.p.getX();
+        double x2 = this.v.getX();
+        double x3 = that.p.getX();
+        double x4 = that.v.getX();
+
+        double y1 = this.p.getY();
+        double y2 = this.v.getY();
+        double y3 = that.p.getY();
+        double y4 = that.v.getY();
+
+        double den= ((y4 - y3) * (x2 - x1) - (x4 - x3) * (y2 - y1));
+
+        double ua = ((x4-x3)*(y1-y3)-(y4-y3)*(x1-x3))/den;
+        double ub = ((x2-x1)*(y1-y3)-(y2-y1)*(x1-x3))/den;
+
+        if(ua < 0 || ua > 1 || ub < 0 || ub > 1){
+            return null;
         }
 
-        return null;
-    }
-
-    /**
-     * A função premite obter o vetor posição r com módulo
-     * igual à distância de A a B e direção de A para B
-     * @return Vetor um novo vetor com a posição r esperada
-     */
-    public Vetor GetVetor(){
-        double rX = B.getX() - A.getX();
-        double rY = B.getY() - A.getY();
-        return new Vetor(rX, rY);
-    }
-    /**
-     * Retorna o segmento de reta no formato pedido, onde os pontos estao ordenados
-     * pela sua aproximação a origem
-     * @return O segmento de reta
-     */
-    public  String toString(){
-        double dA= A.distanceOrigin();
-        double dB = B.distanceOrigin();
-
-        if(dB>=dA){
-            return "sr(" + A.toString() + "; " + B.toString() + ")";
-        } else {
-            return "sr(" + B.toString() + "; " + A.toString() + ")";
-        }
+        return new Ponto((x1+(ua*(x2-x1))),y1+(ua*(y2-y1)));
     }
 }

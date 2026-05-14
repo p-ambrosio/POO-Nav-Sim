@@ -1,51 +1,94 @@
 package project;
 
-import utils.*;
+import utils.Circulo;
+import utils.Ponto;
+import utils.Vetor;
 
 import java.util.Random;
-/*
-    Storms as moving objects circulos also
-    TEACHER SAID:
-    Os obstáculos móveis mudam de posição apenas no início da simulação.
-    Em cada simulação deverão estar em posições diferentes, que devem intersectar rotas,
-    mas durante a simulação permanecem fixos
-
-    Oq simplifica o que fazer
-
-
-    //TODO O CENTRO NAO ATUALIZA RN
+/**
+ * Representa um obstáculo móvel na simulação, modelado como um círculo.
+ * Em cada simulação, o obstáculo é posicionado numa posição diferente,
+ * escolhida ciclicamente de um conjunto fixo de posições predefinidas que
+ * intersectam rotas relevantes. Durante a simulação, o obstáculo permanece fixo.
+ *
+ * @author Aashma Pandey-88430, Bruno Simão-80143, Pedro Ambrósio-88589.
+ * @version 1.0 - 2025-05-14
+ * @inv O raio do obstáculo é positivo (raio > 0) e o centro é sempre uma das
+ *      posições predefinidas em {@code positions} após a chamada a {@code positioning}.
  */
 
 public class MovingObstacle extends Circulo{
-    private final Vetor speed; //used only in the starting set-up
+    //We will cycle within these nodes in each sim, this way it will allways be in a route
+    private static final Random r= new Random();
 
-    public MovingObstacle(Ponto centro, double raio, Vetor speed) {
+    private static int simIndex=r.nextInt(1234);
+    private static final Ponto[] positions = {
+            new Ponto(480,400),
+            new Ponto(120,190),
+            new Ponto(0,600),
+            new Ponto(800,200),
+    };
+
+
+    /**
+     * Constrói um obstáculo móvel com um centro e raio especificados.
+     *
+     * Pré-condição: {@code raio > 0} e {@code centro != null}.
+     * Pós-condição: O obstáculo é criado com o centro e raio fornecidos.
+     *
+     * @param centro o ponto central inicial do obstáculo; não deve ser {@code null}
+     * @param raio   o raio do obstáculo; deve ser positivo
+     */
+    public MovingObstacle(Ponto centro, double raio) {
         super(centro, raio);
-        this.speed = speed;
     }
 
-    private void setPosition(Ponto centro){
-        this.centro = centro;
+    /**
+     * Define o centro do obstáculo para um novo ponto.
+     *
+     * Pré-condição: {@code newCentro != null}.
+     * Pós-condição: O campo {@code center} é atualizado para {@code newCentro}.
+     *
+     * @param newCentro o novo ponto central a atribuir ao obstáculo; não deve ser {@code null}
+     */
+    private void setPosition(Ponto newCentro) {
+        this.center = newCentro; // works as-is if Circulo.centro is protected
     }
 
-    //So we have it be random... since "Em cada simulação deverão estar em posições diferentes" makes it a pain to deal with
-    public void positioning(double time){
-        Random rngesus = new Random();
+    /**
+     * Posiciona o obstáculo numa posição predefinida com base no índice de simulação
+     * atual e no número identificador do obstáculo.
+     * Garante que obstáculos diferentes ficam em posições distintas na mesma simulação.
+     *
+     * @param obstacleNumber o índice deste obstáculo dentro da simulação
+     * usado para diferenciar a posição entre múltiplos obstáculos
+     */
+    public void positioning(int obstacleNumber) {
 
-        double x = getCentro().getX() + speed.getX() * rngesus.nextDouble()*time;
-        double y = getCentro().getY() + speed.getY() * rngesus.nextDouble()*time;
+        int index = (simIndex + obstacleNumber) % positions.length;
 
-        setPosition(new Ponto(x,y));
+        setPosition(positions[index]);
     }
 
-
-    public void move() throws InterruptedException {
-        while(true){
-            positioning(1);
-            wait(500);
-        }
+    /**
+     * Devolve o ponto atual da tempestade.
+     * @return ponto que representa o centro atual.
+     */
+    public Ponto getPosition(){
+        return this.center;
     }
+    /**
+     * Avança o índice global de simulação para a próxima simulação.
+     */
+    public static void nextSimulation() {
+        simIndex++;
 
-    public Vetor getSpeed(){ return speed;}
+    }
+    
+    /**
+     * Devolve o índice atual da simulação.
+     * @return o valor inteiro atual de simIndex
+     */
+    public static int getSimIndex(){return simIndex;}
 
 }

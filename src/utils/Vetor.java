@@ -1,127 +1,138 @@
+/**
+* @author a90143 Bruno Simao
+* @version 3 - lab3 09-03-2026
+*/
 package utils;
 
-/**
- * Classe responsavel pelo vetor bidimensional criado, incluindo tambem
- * as operacoes matematicas necessarias como: Modulo, Produto interno, Cosine e intersecao
- *
- * @author Pedro Ambrosio, nº88589
- * @version 3.0 [10/2/26]
- * @inv O modulo do vetor calculado devera sempre ser maior que 0
- */
 public class Vetor {
-    private final double x;
-    private final double y;
+
+    private double x,y;
+
     /**
-     * Construtor do vetor com validacao de erro
-     * @param x coordenada x do vetor
-     * @param y coordenada y do vetor
+     * @param a     represents point that will be turned into a vector
      */
-    public Vetor(double x, double y) {
-        this.x = x;
-        this.y = y;
-        if (calcMod()<= 0){
+    public Vetor(Ponto a){
+        x = a.getX();
+        y = a.getY();
+    }
+    /**
+     * @inv         this.moduloPosicao != 0
+    *  @param x     double number representing x position of the vector
+    *  @param y     double number representing y position of the vector
+    */
+    public Vetor(double x, double y){
+        this.x=x; this.y=y;
+        if(moduloPosicao() == 0){
             System.out.println("Vetor:iv");
             System.exit(0);
         }
-
     }
 
     /**
-     * Construtor do vetor com os pontos
-     * @param p Ponto cujas coordenadas são usadas para criar o vetor
+     * @return      x as double
      */
-    public Vetor(Ponto p){
-        this(p.getX(), p.getY());
+    public double getX(){ return x;}
+
+    /**
+     * @return      y as double
+     */
+    public double getY(){ return y;}
+
+
+    /**
+     * Checks       cossine similarity between 2 vectors
+     * @inv         this.moduloPosicao != 0
+     * @param that  representing other vector to do compare the cossine with
+     * @return      <v1,v2> / |v1| * |v2|
+     */
+    public double cossineSimilarity(Vetor that){
+        double uv = this.produtoInterno(that);
+        double denominator = this.moduloPosicao()*that.moduloPosicao();
+
+        return uv/denominator;
     }
 
     /**
-     * Func to calculate mod
-     * @return o modulo calculado do vetor
+     * Produto interno between 2 vectors
+     * @inv         this.moduloPosicao != 0
+     * @param that  representing other vector to do Internal product with
+     * @return      x1*x2 + y1*y2
      */
-    public double calcMod(){
-        return Math.sqrt(Math.pow(this.x, 2) + Math.pow(this.y, 2));
+    public double produtoInterno(Vetor that){
+        return this.x*that.x + this.y*that.y;
     }
 
     /**
-     * Func to calculate produto int
-     * @param that o outro vetor com que se calcula o produto interno
-     * @return o produto interno
+     * Compares 2 vectors
+     * @inv         this.moduloPosicao != 0
+     * @param that  representing other vector to compare with
+     * @return      true or false
      */
-    public double prodInt(Vetor that){
-        return (this.x*that.x)+(this.y*that.y);
+    @Override
+    public boolean equals(Object that){
+        if (this == that) return true;
+        if (!(that instanceof Vetor)) return false;
+
+        Vetor p = (Vetor) that;
+        return Double.compare(p.getX(), getX()) == 0 &&
+                Double.compare(p.getY(), getY()) == 0;
     }
 
     /**
-     * Func to calculate cosine
-     * @param that o outro vetor para calcular a sim
-     * @return A similaridade do cosseno
+     * Calculates the modulo posição of the point with respect to the origin (0,0)
+     * @return      |v| = sqrt(x^2+ y^2)
      */
-    public double cosineSim(Vetor that){
-        double prodInt = this.prodInt(that);
-        double Modu = this.calcMod();
-        double Modv = that.calcMod();
-
-        return prodInt /(Modu * Modv);
-    }
-    /**
-     * Getter para a coordenada x
-     * @return a coordenada
-     */
-    public double getX() {
-        return x;
-    }
-    /**
-     * Getter para a coordenada y
-     * @return a coordenada
-     */
-    public double getY() {
-        return y;
+    public double moduloPosicao(){
+        double res = Math.pow(x,2)+Math.pow(y,2);
+        return Math.sqrt(res);
     }
 
     /**
-     * Calcula o ponto de interseção entre este vetor e segmento de reta
-     * @param v o segmento de reta com o qual calcular a interseção
-     * @return o ponto de interseção, ou null se não houver interseção
-     */
-    public Ponto Intersect (SegmentoReta v){
-        return v.Intersect(this);
-    }
-
-    /**
-     * Calcula os novos valores do vetor multiplicados pelo escalar de d
-     * @param d
-     * @return Vetor multiplicado pelo escalar de d
+     * Multiplies a vector by scalar d
+     * @inv         this.moduloPosicao != 0
+     * @param d     scalar number to be multiplied with
+     * @return      new vector resultant of the multiplication
      */
     public Vetor mult(double d){
-        return new Vetor(x*d,y*d);
+        return new Vetor(this.x*d, this.y*d);
     }
 
     /**
-     * Calcula e retorna um vetor adicionado a outro Vetor
-     * @param v Vetor a adicionar
-     * @return Vetor novo vetor com a adicao de v
+     * Creates a vector resultant of the sum of 2 vectors
+     * @inv         this.moduloPosicao != 0
+     * @param v     vector to sum this.vector with
+     * @return      new vector resultant of sum
      */
     public Vetor add(Vetor v){
-        return new Vetor(x+v.x,y+v.y);
+        return new Vetor(this.x+v.getX(), this.y+v.getY());
     }
 
     /**
-     * Calcula e retorna um vetor subtraido a outro Vetor
-     * @param v Vetor a subtrair
-     * @return Vetor, um novo vetor com a subtração do vetor v
+     * Creates a vector resultant of the subtraction of 2 vectors
+     * @inv         this.moduloPosicao != 0
+     * @param v     vector to subtraction this.vector with
+     * @return      new vector resultant of subtraction
      */
     public Vetor sub(Vetor v){
-        return new Vetor(x-v.x,y-v.y);
+        return new Vetor(this.x-v.getX(), this.y-v.getY());
     }
 
     /**
-     * Pretende a retornar uma representação do Vetor numa string com o
-     * formato [x,y]
-     * @return Vetor numa string com formato [x,y] onde cada componente tem a precisão de
-     * duas casas decimais
+     * @inv         this.moduloPosicao != 0
+     * @return vector formatted as "[x,y]"
      */
     public String toString(){
-        return String.format("[%.2f,%.2f]", this.x, this.y);
-
+        return "["+String.format("%.2f", x)+","+String.format("%.2f", y)+"]";
     }
+
+    /**
+     * Checks intersecting point between a vector and a segmento de reta
+     * @inv         this.moduloPosicao != 0
+     * @param v     represents segmento reta to check intersection with
+     * @return      intersecting point
+     */
+    public Ponto intersect(SegmentoReta v){
+        return v.intersect(this);
+    }
+
 }
