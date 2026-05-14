@@ -2,17 +2,10 @@
 <project version="4">
   <component name="CompilerConfiguration">
     <excludeFromCompile>
-      <directory url="file://$PROJECT_DIR$/src/tests" includeSubdirectories="true" />
-      <file url="file://$PROJECT_DIR$/src/apps/ClienteI.java" />
-      <file url="file://$PROJECT_DIR$/src/apps/ClienteJ.java" />
-      <file url="file://$PROJECT_DIR$/src/apps/ClienteK.java" />
-      <file url="file://$PROJECT_DIR$/src/apps/ClienteL.java" />
-      <file url="file://$PROJECT_DIR$/src/utils/Figura.java" />
-      <file url="file://$PROJECT_DIR$/src/utils/Poligno.java" />
-      <file url="file://$PROJECT_DIR$/src/utils/Quadrado.java" />
-      <file url="file://$PROJECT_DIR$/src/utils/Retangulo.java" />
-      <file url="file://$PROJECT_DIR$/src/utils/Triangulo.java" />
-      <file url="file://$PROJECT_DIR$/src/apps/Main.java" />
+      <file url="file://$PROJECT_DIR$/src/tests/MovingObstacleTest.java" />
+      <file url="file://$PROJECT_DIR$/src/tests/PortTest.java" />
+      <file url="file://$PROJECT_DIR$/src/tests/RouteGraphingTest.java" />
+      <file url="file://$PROJECT_DIR$/src/tests/ScheduleTest.java" />
     </excludeFromCompile>
   </component>
 </project>

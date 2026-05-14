@@ -33,8 +33,8 @@ public class MovingObstacle extends Circulo{
     /**
      * Constrói um obstáculo móvel com um centro e raio especificados.
      *
-     * <p>Pré-condição: {@code raio > 0} e {@code centro != null}.</p>
-     * <p>Pós-condição: O obstáculo é criado com o centro e raio fornecidos.</p>
+     * Pré-condição: {@code raio > 0} e {@code centro != null}.
+     * Pós-condição: O obstáculo é criado com o centro e raio fornecidos.
      *
      * @param centro o ponto central inicial do obstáculo; não deve ser {@code null}
      * @param raio   o raio do obstáculo; deve ser positivo
@@ -46,8 +46,8 @@ public class MovingObstacle extends Circulo{
     /**
      * Define o centro do obstáculo para um novo ponto.
      *
-     * <p>Pré-condição: {@code newCentro != null}.</p>
-     * <p>Pós-condição: O campo {@code center} é atualizado para {@code newCentro}.</p>
+     * Pré-condição: {@code newCentro != null}.
+     * Pós-condição: O campo {@code center} é atualizado para {@code newCentro}.
      *
      * @param newCentro o novo ponto central a atribuir ao obstáculo; não deve ser {@code null}
      */
