@@ -5,17 +5,16 @@ import utils.Ponto;
 import utils.Vetor;
 
 import java.util.Random;
-/*
-    Storms as moving objects circulos also
-    TEACHER SAID:
-    Os obstáculos móveis mudam de posição apenas no início da simulação.
-    Em cada simulação deverão estar em posições diferentes, que devem intersectar rotas,
-    mas durante a simulação permanecem fixos
-
-    Oq simplifica o que fazer
-
-
-    //TODO O CENTRO NAO ATUALIZA RN
+/**
+ * Representa um obstáculo móvel na simulação, modelado como um círculo.
+ * Em cada simulação, o obstáculo é posicionado numa posição diferente,
+ * escolhida ciclicamente de um conjunto fixo de posições predefinidas que
+ * intersectam rotas relevantes. Durante a simulação, o obstáculo permanece fixo.
+ *
+ * @author Aashma Pandey-88430, Bruno Simão-80143, Pedro Ambrósio-88589.
+ * @version 1.0 - 2025-05-14
+ * @inv O raio do obstáculo é positivo (raio > 0) e o centro é sempre uma das
+ *      posições predefinidas em {@code positions} após a chamada a {@code positioning}.
  */
 
 public class MovingObstacle extends Circulo{
@@ -31,15 +30,39 @@ public class MovingObstacle extends Circulo{
     };
 
 
-    //speed made no sense
+    /**
+     * Constrói um obstáculo móvel com um centro e raio especificados.
+     *
+     * <p>Pré-condição: {@code raio > 0} e {@code centro != null}.</p>
+     * <p>Pós-condição: O obstáculo é criado com o centro e raio fornecidos.</p>
+     *
+     * @param centro o ponto central inicial do obstáculo; não deve ser {@code null}
+     * @param raio   o raio do obstáculo; deve ser positivo
+     */
     public MovingObstacle(Ponto centro, double raio) {
         super(centro, raio);
     }
 
+    /**
+     * Define o centro do obstáculo para um novo ponto.
+     *
+     * <p>Pré-condição: {@code newCentro != null}.</p>
+     * <p>Pós-condição: O campo {@code center} é atualizado para {@code newCentro}.</p>
+     *
+     * @param newCentro o novo ponto central a atribuir ao obstáculo; não deve ser {@code null}
+     */
     private void setPosition(Ponto newCentro) {
         this.center = newCentro; // works as-is if Circulo.centro is protected
     }
 
+    /**
+     * Posiciona o obstáculo numa posição predefinida com base no índice de simulação
+     * atual e no número identificador do obstáculo.
+     * Garante que obstáculos diferentes ficam em posições distintas na mesma simulação.
+     *
+     * @param obstacleNumber o índice deste obstáculo dentro da simulação
+     * usado para diferenciar a posição entre múltiplos obstáculos
+     */
     public void positioning(int obstacleNumber) {
 
         int index = (simIndex + obstacleNumber) % positions.length;
@@ -47,14 +70,25 @@ public class MovingObstacle extends Circulo{
         setPosition(positions[index]);
     }
 
+    /**
+     * Devolve o ponto atual da tempestade.
+     * @return ponto que representa o centro atual.
+     */
     public Ponto getPosition(){
         return this.center;
     }
-
+    /**
+     * Avança o índice global de simulação para a próxima simulação.
+     */
     public static void nextSimulation() {
         simIndex++;
 
     }
+    
+    /**
+     * Devolve o índice atual da simulação.
+     * @return o valor inteiro atual de simIndex
+     */
     public static int getSimIndex(){return simIndex;}
 
 }
