@@ -33,7 +33,7 @@ public class InfoPanel extends JPanel {
         p.add(new JLabel("X:"));  p.add(fieldX);
         p.add(new JLabel("Y:"));  p.add(fieldY);
 
-        JButton btn = new JButton("Aplicar");
+        JButton btn = new JButton("Done");
         btn.addActionListener(this::actionPerformed);
         p.add(new JLabel());
         p.add(btn);
