@@ -59,7 +59,6 @@ class Graph{
     private final static Port[] ports = {A,B,C,D};
     private final Set<RouteNode> routeNodes = new HashSet<>();
     private final Map<Integer,RouteNode> graph = new HashMap<>();
-    private final List<SegmentoReta> segmentoRetas = new ArrayList<>();
 
     public Graph(){
         RouteNode[] nodes = {
@@ -100,14 +99,59 @@ class Graph{
         nodes[15].addNeighbour(new RouteNode[]{nodes[0], nodes[16]});
         nodes[16].addNeighbour(new RouteNode[]{nodes[15], nodes[12],nodes[9],nodes[10]});
 
-
         routeNodes.addAll(List.of(nodes));
         for(RouteNode rn : routeNodes){
             graph.put(rn.hashCode(),rn);
-            for(RouteNode neighbours : rn.getNeighbours().keySet()) {
-                segmentoRetas.add(new SegmentoReta(rn.getValue(),new Vetor(neighbours.getValue())));
+        }
+
+    }
+
+    // dfs recursive initiator function
+    public List<Route> getAllPaths(RouteNode src, RouteNode dest) {
+        List<Route> allRoutes = new ArrayList<>();
+        List<Ponto> currentPath = new ArrayList<>();
+        Set<RouteNode> visited = new HashSet<>();
+
+        dfs(src, dest, visited, currentPath, allRoutes);
+        return allRoutes;
+    }
+
+    // recursive depth first search function
+    private void dfs(RouteNode current, RouteNode dest, Set<RouteNode> visited, List<Ponto> currentPath, List<Route> allRoutes) {
+        visited.add(current);
+        currentPath.add(current.getValue());
+
+        if (current == dest) {
+            allRoutes.add(new Route(currentPath.toArray(new Ponto[0])));
+        } else {
+            for (RouteNode neighbour : current.getNeighbours().keySet()) {
+                if (!visited.contains(neighbour)) {
+                    dfs(neighbour, dest, visited, currentPath, allRoutes);
+                }
             }
         }
+
+        // backtrack
+        visited.remove(current);
+        currentPath.removeLast();
+    }
+
+    // call dfs for all ports to get all the routes
+    public List<Route> getAllPortPaths() {
+        List<Route> allRoutes = new ArrayList<>();
+        Port[] ports = getPorts();
+
+        for (int i = 0; i < ports.length; i++) {
+            for (int j = 0; j < ports.length; j++) {
+                if (i != j) {
+                    RouteNode src = getRouteNode(ports[i].getName());
+                    RouteNode dest = getRouteNode(ports[j].getName());
+                    allRoutes.addAll(getAllPaths(src, dest));
+                }
+            }
+        }
+
+        return allRoutes;
     }
 
     public List<Integer> f(RouteNode src, RouteNode dest) {
@@ -269,4 +313,7 @@ public class RouteGraphing {
         return staticObstacle;
     }
 
+    public List<Route> getRoutes(){
+        return graph.getAllPortPaths();
+    }
 }

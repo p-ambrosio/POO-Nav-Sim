@@ -46,9 +46,7 @@ public class Simulation {
 
             List<MovingObstacle> movingList = new ArrayList<>(List.of(graph.getMovingObstacle()));
 
-            List<Route> routeList = new ArrayList<>();
-            for(Ship sh : ships)
-                routeList.add(sh.getCurrentRoute());
+            List<Route> routeList = graph.getRoutes();
 
             mappingPanel.update(
                     routeList,
