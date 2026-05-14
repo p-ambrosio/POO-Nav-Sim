@@ -2,20 +2,23 @@ package project;
 
 import utils.*;
 
+import java.util.List;
+
 
 public class Ship extends Circulo {
     private final String tripCode;
     private Ponto position;
-    private double speed; //constant?
-    private Route currentRoute;
+    private final double speed; //constant?
+    private final Route currentRoute;
     private final int departureTime;
     private boolean isWaiting; //To avoid colisions??
     private boolean arrived;
-    private final double radius = 1;
+    private final double radius = 50;
     private final Port startingPort;
     private final Port destinationPort;
     private double elapsedTime =0;
-    private Navegador nav;
+    private boolean isNear=false;
+    private final Navegador nav;
 
     RouteGraphing rg = new RouteGraphing();
     /*
@@ -61,23 +64,50 @@ public class Ship extends Circulo {
         this.center = position;
     }
 
+    public void update(double dt, List<Ship> ships) {
 
+        for (Ship s : ships) {
+            s.stopWaiting();
+        }
+
+        for (int i = 0; i < ships.size(); i++) {
+            for (int j = i + 1; j < ships.size(); j++) {
+                Ship a = ships.get(i);
+                Ship b = ships.get(j);
+
+                if (a.hasArrived() || b.hasArrived()) {
+                    continue;
+                }
+                if (a.isNear(b)) {
+                    if (a.shouldWaitFor(b)) {
+                        a.startWaiting();
+                    } else {
+                        b.startWaiting();
+                    }
+                }
+            }
+        }
+
+        // movement phase
+        for (Ship s : ships) {
+            s.movement(dt);
+        }
+    }
     public boolean isNear(Ship other) {
         double dx = this.center.getX() - other.center.getX();
         double dy = this.center.getY() - other.center.getY();
         double dist = Math.sqrt(dx * dx + dy * dy);
-        return dist <= 2.0; // circles touch when dist <= 1+1
+        return dist <= this.radius+other.radius; // circles touch when dist <= 1+1
     }
 
     //decides which ship has to wait based of the trip code like A12
     public boolean shouldWaitFor(Ship other) {
-        return this.tripCode.compareTo(other.tripCode) < 0;
+        return this.tripCode.compareTo(other.tripCode) > 0;
     }
 
     //for the sim
     public void startWaiting() { isWaiting = true; }
     public void stopWaiting()  { isWaiting = false; }
-
 
     /*
         Getters and setter?

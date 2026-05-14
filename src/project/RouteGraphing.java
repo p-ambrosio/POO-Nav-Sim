@@ -57,8 +57,8 @@ class Graph{
     private final static Port D=new Port("D",new Ponto(800,800));
 
     private final static Port[] ports = {A,B,C,D};
-    private static final Set<RouteNode> routeNodes = new HashSet<>();
-    private static final Map<Integer,RouteNode> graph = new HashMap<>();
+    private final Set<RouteNode> routeNodes = new HashSet<>();
+    private final Map<Integer,RouteNode> graph = new HashMap<>();
 
     public Graph(){
         RouteNode[] nodes = {
@@ -105,7 +105,7 @@ class Graph{
         }
     }
 
-    public static List<Integer> f(RouteNode src, RouteNode dest) {
+    public List<Integer> f(RouteNode src, RouteNode dest) {
         Map<Integer, Integer> distances = new HashMap<>();
         Map<Integer, Integer> previous = new HashMap<>();
         PriorityQueue<int[]> pq = new PriorityQueue<>(Comparator.comparingInt(a -> a[1]));
@@ -161,11 +161,12 @@ class Graph{
         return path;
     }
 
-    public static Route findPath(RouteNode src, RouteNode dest){
+    public Route findPath(RouteNode src, RouteNode dest){
         Route r;
         List<Integer> route = f(src,dest);
         List<Ponto> pontos = new ArrayList<>();
         for(Integer n : route){
+//            IO.println(graph.get(n).getKey());
             pontos.add(graph.get(n).getValue());
         }
 
@@ -216,6 +217,13 @@ class Graph{
 
 public class RouteGraphing {
     Graph graph = new Graph();
+    Poligono[] staticObstacle = {
+            new Poligono(new Ponto[]{new Ponto(150,480),new Ponto(60,290), new Ponto(200,340)}),
+            new Poligono(new Ponto[]{new Ponto(370,790),new Ponto(460,740),new Ponto(350,640)}),
+            new Poligono(new Ponto[]{new Ponto(760,580),new Ponto(610,460),new Ponto(770,360)}),
+            new Poligono(new Ponto[]{new Ponto(360,160),new Ponto(510,30),new Ponto(290,80)}),
+    };
+
 
     public RouteGraphing(){
         MovingObstacle mo1 = new MovingObstacle(new Ponto(0,0),1);
@@ -226,11 +234,10 @@ public class RouteGraphing {
 
         graph.setBlocked(mo1.getPosition());
         graph.setBlocked(mo2.getPosition());
-
     }
 
     public Route findPath(Port beginning, Port end){
-        return Graph.findPath(graph.getRouteNode(beginning.getName()),graph.getRouteNode(end.getName()));
+        return graph.findPath(graph.getRouteNode(beginning.getName()),graph.getRouteNode(end.getName()));
     }
     public Port getPort(int i){
         return graph.getPort(i);
@@ -239,4 +246,9 @@ public class RouteGraphing {
     public Port getPort(String name){
         return graph.getPort(name);
     }
+
+    public Poligono[] getStaticObstacle(){
+        return staticObstacle;
+    }
+
 }

@@ -23,7 +23,7 @@ public class MovingObstacle extends Circulo{
     private static final Ponto[] positions = {
             new Ponto(480,400),
             new Ponto(120,190),
-            new Ponto(270,600),
+            new Ponto(0,600),
             new Ponto(800,200),
     };
 
