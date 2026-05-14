@@ -20,21 +20,11 @@ class RouteGraphingTest {
 
     @Test
     void findPath() {
-        List<Ponto> pts = new ArrayList<>();
-        Ponto p = new Ponto(1,2);
-        pts.add(p);
-        Route r = new Route(pts);
-        Port port1 = new Port("asd",new Ponto(1,1));
-        Port port2 = new Port("asd",new Ponto(1,1));
-        List<Route> routes = new ArrayList<>();     // insert preset routes
-        routes.add(r);
-        List<Port> ports = new ArrayList<>();       // insert preset ports
-        ports.add(port1);
-        ports.add(port2);
+        Route r = new Route(new Ponto[]{new Ponto(1,2)});
 
         RouteGraphing rg = new RouteGraphing();     // rg already has all preset ports/routes inside
 
-        assertEquals(routes.getFirst(),rg.findPath(ports.get(0),ports.get(1)));
+        assertEquals(r,rg.findPath(rg.getPort("A"),rg.getPort("D")));
         // suppose the route to get between port 1 and 2 is always going to be route 1
         // ASSUMING no moving obstacle
     }

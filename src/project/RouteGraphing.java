@@ -12,12 +12,14 @@ class RouteNode {
     String key;
     Ponto value;
     double distance;
+    boolean isBlocked;
     Map<RouteNode, Double> neighbours = new HashMap<>();
 
     RouteNode(String key, Ponto value){
         this.key=key;
         this.value = value;
         distance=0;
+        isBlocked=false;
     }
 
     public void addNeighbour(RouteNode neighbour){
@@ -30,6 +32,9 @@ class RouteNode {
         }
     }
 
+    public boolean isBlocked(){
+        return isBlocked;
+    }
 
     public String getKey(){
         return this.key;
@@ -53,6 +58,7 @@ class Graph{
 
     private final static Port[] ports = {A,B,C,D};
     private static final Set<RouteNode> routeNodes = new HashSet<>();
+    private static final Map<Integer,RouteNode> graph = new HashMap<>();
 
     public Graph(){
         RouteNode[] nodes = {
@@ -94,93 +100,74 @@ class Graph{
         nodes[16].addNeighbour(new RouteNode[]{nodes[15], nodes[12],nodes[9],nodes[10]});
 
         routeNodes.addAll(List.of(nodes));
-    }
-//    public List<String> shortestPath(String start, String end) {
-//        Map<String, Integer> distances = new HashMap<>();
-//        Map<String, String> previous = new HashMap<>();
-//        PriorityQueue<Node> queue = new PriorityQueue<>(Comparator.comparingInt(node -> node.distance));
-//
-//        for (String node : adjList.keySet()) {
-//            distances.put(node, Integer.MAX_VALUE);
-//            previous.put(node, null);
-//        }
-//
-//        distances.put(start, 0);
-//        queue.add(new Node(start, 0));
-//
-//        while (!queue.isEmpty()) {
-//            Node current = queue.poll();
-//
-//            if (current.name.equals(end)) {
-//                return constructPath(previous, end);
-//            }
-//
-//            for (Edge edge : adjList.get(current.name)) {
-//                int newDist = distances.get(current.name) + edge.weight;
-//
-//                if (newDist < distances.get(edge.destination)) {
-//                    distances.put(edge.destination, newDist);
-//                    previous.put(edge.destination, current.name);
-//                    queue.add(new Node(edge.destination, newDist));
-//                }
-//            }
-//        }
-//
-//        return Collections.emptyList();
-//    }
-
-    static void setDistances(RouteNode src){
-        for(RouteNode adj : src.neighbours.keySet()){
-            adj.distance=src.neighbours.get(adj);
-            setDistances(adj);
+        for(RouteNode rn : routeNodes){
+            graph.put(rn.hashCode(),rn);
         }
     }
 
-    public static void findPaths(RouteNode src, RouteNode dest,Stack<RouteNode> connectionPath, List<Stack<RouteNode>> connectionPaths) {
+    public static List<Integer> f(RouteNode src, RouteNode dest) {
+        Map<Integer, Integer> distances = new HashMap<>();
+        Map<Integer, Integer> previous = new HashMap<>();
+        PriorityQueue<int[]> pq = new PriorityQueue<>(Comparator.comparingInt(a -> a[1]));
 
-        for (RouteNode nextNode : src.getNeighbours().keySet()) {
-            if (nextNode.getValue().equals(dest.getValue())) {
-                Stack<RouteNode> temp = new Stack<>();
-                temp.addAll(connectionPath);
-                connectionPaths.add(temp);
-            } else if (!connectionPath.contains(nextNode)) {
-                connectionPath.push(nextNode);
-                findPaths(nextNode, dest,connectionPath,connectionPaths);
-                connectionPath.pop();
-            }
+        for (RouteNode node : routeNodes) {
+            distances.put(node.hashCode(), Integer.MAX_VALUE);
         }
 
+        distances.put(src.hashCode(), 0);
+        pq.offer(new int[]{src.hashCode(), 0});
+
+        while (!pq.isEmpty()) {
+            int[] current = pq.poll();
+            int currentNode = current[0];
+            int currentDistance = current[1];
+
+            // destination
+            if (currentNode == dest.hashCode()) {
+                break;
+            }
+
+            // current distance > recorded distance? skip
+            if (currentDistance > distances.get(currentNode)) {
+                continue;
+            }
+
+            // check neighbours
+            for (Map.Entry<RouteNode, Double> neighbour :graph.get(currentNode).getNeighbours().entrySet()) {
+                int neighborNode = neighbour.getKey().hashCode();
+                int weight = neighbour.getValue().intValue();
+                int totalDistance = currentDistance + weight;
+
+                if (totalDistance < distances.get(neighborNode)) {
+                    distances.put(neighborNode, totalDistance);
+                    previous.put(neighborNode, currentNode);            // parent
+                    pq.offer(new int[]{neighborNode, totalDistance});
+                }
+            }
+        }
+        List<Integer> path = new ArrayList<>();
+        Integer current = dest.hashCode();
+
+        while (current != null) {
+            path.add(current);
+            current = previous.get(current);
+        }
+
+        // reverse to get src -> dest
+        Collections.reverse(path);
+        return path;
     }
 
-    public static void f(RouteNode src, RouteNode dest){
-
-        Stack<RouteNode> connectionPath = new Stack<>();
-
-        List<Stack<RouteNode>> connectionPaths = new ArrayList<>();
-        findPaths(src,dest,connectionPath,connectionPaths);
-
-        List<Route> routes=new ArrayList<>();
-        List<Ponto> pontos=new ArrayList<>();
-        for(Stack<RouteNode> srn : connectionPaths){                    // not working and im killing myself bc of it
-            RouteNode[] routeNs = srn.toArray(new RouteNode[0]);
-            for(RouteNode pts : routeNs){
-                pontos.add(pts.getValue());
-            }
-            routes.add(new Route(pontos.toArray(new Ponto[0])));
+    public static Route findPath(RouteNode src, RouteNode dest){
+        Route r;
+        List<Integer> route = f(src,dest);
+        List<Ponto> pontos = new ArrayList<>();
+        for(Integer n : route){
+            pontos.add(graph.get(n).getValue());
         }
-        double minDist = Double.MAX_VALUE;
-        int i=0;
-        for(Route r : routes){
-            if(r.findDistance() < minDist){
-                minDist=r.findDistance();
-            }
-            i++;
-        }
-        Route[] routesArray = routes.toArray(new Route[0]);
-        SegmentoReta[] sr = routesArray[i-1].turnToLineSegment(false);
-        for(SegmentoReta srs : sr){
-            IO.println(srs);
-        }
+
+        r = new Route(pontos.toArray(new Ponto[0]));
+        return r;
     }
 
     protected RouteNode getRouteNode(String key){
@@ -210,12 +197,14 @@ class Graph{
 
 public class RouteGraphing {
     Graph graph = new Graph();
+
     public RouteGraphing(){
-         findShortestPath(getPort("A"),getPort("D"));
 
     }
-    public void findShortestPath(Port beginning, Port end){
-        Graph.f(graph.getRouteNode(beginning.getName()),graph.getRouteNode(end.getName()));
+
+    public Route findPath(Port beginning, Port end){
+
+        return Graph.findPath(graph.getRouteNode(beginning.getName()),graph.getRouteNode(end.getName()));
     }
     public Port getPort(int i){
         return graph.getPort(i);

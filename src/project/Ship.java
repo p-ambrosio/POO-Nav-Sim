@@ -35,7 +35,7 @@ public class Ship extends Circulo {
         this.isWaiting = false;
         this.arrived = false;
         this.currentRoute = initialRoute;
-        this.position = initialRoute.getPoints().getFirst();
+        this.position = initialRoute.getPoints()[0];
         this.tripCode = startingPort.getName() + departureTime;
     }
 
