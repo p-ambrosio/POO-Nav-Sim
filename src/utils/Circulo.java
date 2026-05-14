@@ -75,4 +75,20 @@ public class Circulo {
         return Ponto.sort(intersectPoints);
 
     }
+
+    /**
+     * Getter do centro do circulo
+     * @return Centro
+     */
+    public Ponto getCentro() {
+        return center;
+    }
+
+    /**
+     * Getter do raio do circulo
+     * @return raio
+     */
+    public double getRaio() {
+        return radius;
+    }
 }

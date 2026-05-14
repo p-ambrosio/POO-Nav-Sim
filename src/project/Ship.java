@@ -51,7 +51,7 @@ public class Ship extends Circulo {
 
         // Check if reached destination
         if (elapsedTime >= totalTime) {
-            position = currentRoute.getPoints().getLast();
+            position = currentRoute.getPoints()[currentRoute.getPoints().length - 1];
             arrived  = true;
             return;
         }
@@ -63,9 +63,11 @@ public class Ship extends Circulo {
     }
 
 
-    public boolean isNear(Ship other){
-        // intercepts code lol
-        return this.intercepts(other); //Circulo intercepts circulo
+    public boolean isNear(Ship other) {
+        double dx = this.center.getX() - other.center.getX();
+        double dy = this.center.getY() - other.center.getY();
+        double dist = Math.sqrt(dx * dx + dy * dy);
+        return dist <= 2.0; // circles touch when dist <= 1+1
     }
 
     //decides which ship has to wait based of the trip code like A12
