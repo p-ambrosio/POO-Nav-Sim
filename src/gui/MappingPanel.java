@@ -153,7 +153,7 @@ public class MappingPanel extends JPanel {
             for (Ship other : ships) {
                 if (other != s && !other.hasArrived() && s.isNear(other)) { near = true; break; }
             }
-            int pr = Math.max(100, sp(1));
+            int pr = Math.max(80, sp(1));
 
             if (near) {
                 // Filled semi-transparent yellow-green
