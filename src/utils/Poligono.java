@@ -50,5 +50,8 @@ public class Poligono {
             return intersectPoints.toArray(new Ponto[0]);   // T12 não está ordenado
     }
 
+    public Ponto[] getVertices() {
+        return vert;
+    }
 
 }

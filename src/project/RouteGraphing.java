@@ -111,7 +111,8 @@ class Graph{
         PriorityQueue<int[]> pq = new PriorityQueue<>(Comparator.comparingInt(a -> a[1]));
 
         for (RouteNode node : routeNodes) {
-            distances.put(node.hashCode(), Integer.MAX_VALUE);
+            if(!node.isBlocked)
+                distances.put(node.hashCode(), Integer.MAX_VALUE);
         }
 
         distances.put(src.hashCode(), 0);
@@ -134,14 +135,16 @@ class Graph{
 
             // check neighbours
             for (Map.Entry<RouteNode, Double> neighbour :graph.get(currentNode).getNeighbours().entrySet()) {
-                int neighborNode = neighbour.getKey().hashCode();
-                int weight = neighbour.getValue().intValue();
-                int totalDistance = currentDistance + weight;
+                if(!neighbour.getKey().isBlocked) {
+                    int neighborNode = neighbour.getKey().hashCode();
+                    int weight = neighbour.getValue().intValue();
+                    int totalDistance = currentDistance + weight;
 
-                if (totalDistance < distances.get(neighborNode)) {
-                    distances.put(neighborNode, totalDistance);
-                    previous.put(neighborNode, currentNode);            // parent
-                    pq.offer(new int[]{neighborNode, totalDistance});
+                    if (totalDistance < distances.get(neighborNode)) {
+                        distances.put(neighborNode, totalDistance);
+                        previous.put(neighborNode, currentNode);            // parent
+                        pq.offer(new int[]{neighborNode, totalDistance});
+                    }
                 }
             }
         }
@@ -193,13 +196,28 @@ class Graph{
         }
         return null;
     }
+
+    public void setBlocked(Ponto node){
+        for(RouteNode nodes : routeNodes){
+            if(nodes.getValue().equals(node)){
+                nodes.isBlocked=true;
+            }
+        }
+    }
 }
 
 public class RouteGraphing {
     Graph graph = new Graph();
 
     public RouteGraphing(){
+        MovingObstacle mo1 = new MovingObstacle(new Ponto(0,0),1);
+        MovingObstacle mo2 = new MovingObstacle(new Ponto(0,0),1);
 
+        mo1.positioning(0);
+        mo2.positioning(1);
+
+        graph.setBlocked(mo1.getPosition());
+        graph.setBlocked(mo2.getPosition());
     }
 
     public Route findPath(Port beginning, Port end){

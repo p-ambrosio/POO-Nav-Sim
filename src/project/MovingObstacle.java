@@ -45,6 +45,10 @@ public class MovingObstacle extends Circulo{
         setPosition(positions[index]);
     }
 
+    public Ponto getPosition(){
+        return this.center;
+    }
+
     public static void nextSimulation() {
         simIndex++;
     }
