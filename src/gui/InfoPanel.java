@@ -12,7 +12,6 @@ import java.util.function.Consumer;
 public class InfoPanel extends JPanel {
     private final JTextField fieldX = new JTextField("1", 5);
     private final JTextField fieldY = new JTextField("2", 5);
-    private final JLabel timeLbl = new JLabel("T = 0");
     private Consumer<Vetor> currentListener;
 
     public InfoPanel() {
@@ -23,7 +22,6 @@ public class InfoPanel extends JPanel {
 
         add(buildCurrentPanel());
         add(Box.createVerticalStrut(16));
-        add(buildTimePanel());
     }
 
     private JPanel buildCurrentPanel() {
@@ -54,18 +52,8 @@ public class InfoPanel extends JPanel {
 
         if(currentListener != null) {
             currentListener.accept(v);
-        }    }
-
-    private JPanel buildTimePanel() {
-        JPanel p = new JPanel();
-        p.setBackground(new Color(245, 245, 245));
-        timeLbl.setFont(new Font("SansSerif", Font.BOLD, 13));
-        p.add(timeLbl);
-        return p;
+        }
     }
 
-    public void updateTime(int t) {
-        timeLbl.setText("T = " + t);
-    }
 
 }

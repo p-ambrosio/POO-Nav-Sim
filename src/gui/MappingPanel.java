@@ -245,7 +245,7 @@ public class MappingPanel extends JPanel {
         for (String l : lines) bw = Math.max(bw, fm.stringWidth(l));
         bw += pw * 2;
         int bh = 6 + lines.length * lh + 4;
-        int bx = PAD_L + 4, by = PAD_T + 4;
+        int bx = PAD_L + 84, by = PAD_T - 12;
 
         g2.setColor(new Color(230, 255, 230, 230));
         g2.fillRoundRect(bx, by, bw, bh, 8, 8);
